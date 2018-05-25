@@ -5,7 +5,11 @@ package org.sniffhu.goodHttp.util;
  */
 public class StringUtils {
 
-    public static boolean isNotEmpty(String url) {
-        return true;
+    public static boolean isNotEmpty(CharSequence cs) {
+        return !isEmpty(cs);
+    }
+
+    public static boolean isEmpty(CharSequence cs) {
+        return cs == null || cs.length() == 0;
     }
 }

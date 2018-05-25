@@ -9,6 +9,7 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.sniffhu.goodHttp.method.GetMethod;
 import org.sniffhu.goodHttp.response.AbstractResponseHandler;
 import org.sniffhu.goodHttp.util.StringUtils;
 
@@ -21,6 +22,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class RequestTemplate<In, Out> {
     private String url;
+    private String userAgent;
+    private Boolean isKeepAlive;
     private In params;
     private String reqCharset;
     private String respCharset;
@@ -28,6 +31,7 @@ public class RequestTemplate<In, Out> {
     private RequestConfig requestConfig;
     private PoolingHttpClientConnectionManager poolConnManager;
     private Integer retry;
+    private HttpRequestBase method;
 
     public RequestTemplate genTemplate() {
         RequestTemplate tmp = new RequestTemplate();
@@ -61,17 +65,76 @@ public class RequestTemplate<In, Out> {
         return this;
     }
 
-    public RequestTemplate requestConfig(RequestConfig requestConfig) {
+    RequestTemplate requestConfig(RequestConfig requestConfig) {
         this.requestConfig = requestConfig;
         return this;
     }
 
-    public RequestTemplate connPoolManager(PoolingHttpClientConnectionManager manager) {
+    RequestTemplate connPoolManager(PoolingHttpClientConnectionManager manager) {
         this.poolConnManager = manager;
         return this;
     }
 
-    public RequestTemplate retry(Integer retry) {
+    RequestTemplate retry(Integer retry) {
+        this.retry = retry;
+        return this;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public RequestTemplate setUrl(String url) {
+        this.url = url;
+        return this;
+    }
+
+    public RequestConfig getRequestConfig() {
+        return requestConfig;
+    }
+
+    public RequestTemplate setRequestConfig(RequestConfig requestConfig) {
+        this.requestConfig = requestConfig;
+        return this;
+    }
+
+    public HttpRequestBase getMethod() {
+        return method;
+    }
+
+    public RequestTemplate setMethod(HttpRequestBase method) {
+        this.method = method;
+        return this;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public RequestTemplate setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+        return this;
+    }
+
+    public Boolean getKeepAlive() {
+        return isKeepAlive;
+    }
+
+    public RequestTemplate notKeepAlive() {
+        isKeepAlive = false;
+        return this;
+    }
+
+    public RequestTemplate setKeepAlive(Boolean keepAlive) {
+        isKeepAlive = keepAlive;
+        return this;
+    }
+
+    public Integer getRetry() {
+        return retry;
+    }
+
+    public RequestTemplate setRetry(Integer retry) {
         this.retry = retry;
         return this;
     }
@@ -235,7 +298,8 @@ public class RequestTemplate<In, Out> {
             }
             entity = "?" + tmpParams.toString();
         }
-        HttpGet httpGet = generateHttpGet(url + entity);
+//        HttpGet httpGet = generateHttpGet(url + entity);
+        HttpGet httpGet =  new GetMethod().generateHttpMethod(this);
         return (Out) defaultRequest(httpGet);
     }
 

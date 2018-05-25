@@ -1,11 +1,15 @@
 package org.sniffhu.goodHttp.response;
 
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class DefaultJsonHandler extends AbstractResponseHandler<JSONObject> {
+    private final Logger logger = LoggerFactory.getLogger(DefaultJsonHandler.class);
     private byte[] mBuffer;
 
     public DefaultJsonHandler() {
@@ -14,13 +18,13 @@ public class DefaultJsonHandler extends AbstractResponseHandler<JSONObject> {
 
     @Override
     protected JSONObject readObject(byte[] transTemp) throws IOException {
+        String tempStr = "";
         try {
-            return JSONObject.fromObject(new String(transTemp, super.getCharset()));
+            tempStr = new String(transTemp, super.getCharset());
+            return JSON.parseObject(tempStr);
         } catch (JSONException jsonException) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("CODE", "4001");
-            jsonObject.put("MSG", "JSONException:" + jsonException.getLocalizedMessage() + "|" + new String(transTemp));
-            return jsonObject;
+            logger.error("response pause failed.{}", tempStr);
+            throw jsonException;
         }
     }
 

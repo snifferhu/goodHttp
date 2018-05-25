@@ -7,7 +7,7 @@ import org.apache.http.client.methods.HttpRequestBase;
  */
 public class PatchMethod implements GenerateHttpMethod {
     @Override
-    public HttpRequestBase generateHttpPatch() {
+    public HttpRequestBase generateHttpMethod() {
         return null;
     }
 }

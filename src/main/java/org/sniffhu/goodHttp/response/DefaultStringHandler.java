@@ -1,13 +1,13 @@
 package org.sniffhu.goodHttp.response;
 
-import net.sf.json.JSONObject;
-import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
-@Component
 public class DefaultStringHandler extends AbstractResponseHandler<String> {
+    private final Logger logger = LoggerFactory.getLogger(DefaultStringHandler.class);
     private byte[] mBuffer;
 
     public DefaultStringHandler() {
@@ -15,14 +15,11 @@ public class DefaultStringHandler extends AbstractResponseHandler<String> {
     }
 
     @Override
-    protected String readObject(byte[] transTemp) {
+    protected String readObject(byte[] transTemp) throws UnsupportedEncodingException {
         try {
             return new String(transTemp, super.getCharset());
-        } catch (UnsupportedEncodingException jsonException) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("CODE", "4001");
-            jsonObject.put("MSG", "JSONException:" + jsonException.getLocalizedMessage() + "|" + new String(transTemp));
-            return jsonObject.toString();
+        } catch (UnsupportedEncodingException e) {
+            throw  e;
         }
     }
 

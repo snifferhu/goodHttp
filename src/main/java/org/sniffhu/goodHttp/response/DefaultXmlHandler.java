@@ -3,11 +3,9 @@ package org.sniffhu.goodHttp.response;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
-import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 
-@Component
 public class DefaultXmlHandler extends AbstractResponseHandler<Document> {
 
     @Override
