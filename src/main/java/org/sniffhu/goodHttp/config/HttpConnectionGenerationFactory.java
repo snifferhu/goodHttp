@@ -8,16 +8,7 @@ import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
 public class HttpConnectionGenerationFactory {
-    private HttpConfig config;
-
-    public HttpConnectionGenerationFactory(){
-        config = new HttpConfig();
-        config.setConnReqTimeout(5000);
-        config.setConnTimeout(5000);
-        config.setSocketTimeout(5000);
-        config.setDefaultConn(50);
-        config.setPoolMaxTotal(500);
-    }
+    private HttpConfig config = new HttpConfig();
 
     public PoolingHttpClientConnectionManager generatePoolManger() {
         Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
@@ -43,7 +34,7 @@ public class HttpConnectionGenerationFactory {
                 .build();
     }
 
-    public HttpConfig getConfig() {
+    private HttpConfig getConfig() {
         return config;
     }
 

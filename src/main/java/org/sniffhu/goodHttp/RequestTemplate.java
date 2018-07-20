@@ -9,6 +9,8 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sniffhu.goodHttp.method.GetMethod;
 import org.sniffhu.goodHttp.response.AbstractResponseHandler;
 import org.sniffhu.goodHttp.util.StringUtils;
@@ -21,9 +23,10 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 
 public class RequestTemplate<In, Out> {
+    private static final Logger logger = LoggerFactory.getLogger(RequestTemplate.class);
     private String url;
-    private String userAgent;
-    private Boolean isKeepAlive;
+    private String userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 UBrowser/5.5.6743.209 Safari/537.36";
+    private Boolean isKeepAlive = true;
     private In params;
     private String reqCharset;
     private String respCharset;
@@ -225,6 +228,7 @@ public class RequestTemplate<In, Out> {
             jsonObject.put("CODE", "4003");
             jsonObject.put("MSG", "SocketTimeoutException:" + timeoutException.getLocalizedMessage());
         } catch (Exception e) {
+            logger.error("url:{} param{}", url, params, e);
             jsonObject = new JSONObject();
             jsonObject.put("CODE", "4004");
             jsonObject.put("MSG", "Exception:" + e.getLocalizedMessage());
@@ -299,7 +303,7 @@ public class RequestTemplate<In, Out> {
             entity = "?" + tmpParams.toString();
         }
 //        HttpGet httpGet = generateHttpGet(url + entity);
-        HttpGet httpGet =  new GetMethod().generateHttpMethod(this);
+        HttpGet httpGet = new GetMethod().generateHttpMethod(this);
         return (Out) defaultRequest(httpGet);
     }
 
@@ -320,6 +324,7 @@ public class RequestTemplate<In, Out> {
             jsonObject.put("CODE", "4003");
             jsonObject.put("MSG", "SocketTimeoutException:" + timeoutException.getLocalizedMessage());
         } catch (Exception e) {
+            logger.error("url:{} param:{}", url, params, e);
             jsonObject = new JSONObject();
             jsonObject.put("CODE", "4004");
             jsonObject.put("MSG", "Exception:" + e.getLocalizedMessage());

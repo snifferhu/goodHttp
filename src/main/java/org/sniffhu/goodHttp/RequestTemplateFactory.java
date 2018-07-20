@@ -5,6 +5,8 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.sniffhu.goodHttp.config.HttpConnectionGenerationFactory;
 import org.sniffhu.goodHttp.response.AbstractResponseHandler;
 import org.sniffhu.goodHttp.response.DefaultJsonHandler;
+import org.sniffhu.goodHttp.response.DefaultStringHandler;
+import org.sniffhu.goodHttp.response.DefaultXmlHandler;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -16,8 +18,11 @@ public class RequestTemplateFactory {
     private RequestConfig requestConfig;
 
     private AbstractResponseHandler handler = new DefaultJsonHandler();
+    private AbstractResponseHandler xmlHandler = new DefaultXmlHandler();
+    private AbstractResponseHandler strHandler = new DefaultStringHandler();
 
     public <In, Out> RequestTemplate<In, Out> genRequestTemplate() {
+        requestConfig = RequestConfig.custom().build();
         return new RequestTemplate<In, Out>()
                 .reqCharset(UTF_8.toString())
                 .respCharset(UTF_8.toString())
