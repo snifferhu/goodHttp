@@ -6,16 +6,18 @@ import org.sniffhu.goodHttp.RequestTemplate;
 /**
  * Created by Sniff on 2018/5/9.
  */
-public class PutMethod implements GenerateHttpMethod {
+public class PutMethod<In, Out> extends AbstractGenerateHttpMethod<In, Out> {
+    public PutMethod(RequestTemplate<In, Out> inOutRequestTemplate) {
+        super(inOutRequestTemplate);
+    }
+
     @Override
-    public <In, Out> HttpPut generateHttpMethod(RequestTemplate<In, Out> inOutRequestTemplate) {
-        HttpPut httpPut = new HttpPut(inOutRequestTemplate.getUrl());
-        String userAgent = inOutRequestTemplate.getUserAgent();
-        httpPut.addHeader("User-agent", userAgent);
-        if (inOutRequestTemplate.getKeepAlive()) {
+    public  HttpPut generateHttpMethod() {
+        HttpPut httpPut = new HttpPut(getInOutRequestTemplate().getUrl());
+        if (getInOutRequestTemplate().getKeepAlive()) {
             httpPut.addHeader("Connection", "Keep-Alive");
         }
-        httpPut.setConfig(inOutRequestTemplate.getRequestConfig());
+        httpPut.setConfig(getInOutRequestTemplate().getRequestConfig());
         return httpPut;
     }
 }

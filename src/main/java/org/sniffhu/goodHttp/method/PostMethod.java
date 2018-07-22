@@ -6,16 +6,18 @@ import org.sniffhu.goodHttp.RequestTemplate;
 /**
  * Created by Sniff on 2018/5/9.
  */
-public class PostMethod implements GenerateHttpMethod {
+public class PostMethod<In, Out> extends AbstractGenerateHttpMethod<In, Out> {
     @Override
-    public <In, Out> HttpPost generateHttpMethod(RequestTemplate<In, Out> inOutRequestTemplate) {
-        HttpPost httpPost = new HttpPost(inOutRequestTemplate.getUrl());
-        String userAgent = inOutRequestTemplate.getUserAgent();
-        httpPost.addHeader("User-agent", userAgent);
-        if (inOutRequestTemplate.getKeepAlive()) {
+    public <In, Out> HttpPost generateHttpMethod() {
+        HttpPost httpPost = new HttpPost(getInOutRequestTemplate().getUrl());
+        if (getInOutRequestTemplate().getKeepAlive()) {
             httpPost.addHeader("Connection", "Keep-Alive");
         }
-        httpPost.setConfig(inOutRequestTemplate.getRequestConfig());
+        httpPost.setConfig(getInOutRequestTemplate().getRequestConfig());
         return httpPost;
+    }
+
+    public PostMethod(RequestTemplate<In, Out> inOutRequestTemplate) {
+        super(inOutRequestTemplate);
     }
 }

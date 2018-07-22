@@ -18,12 +18,12 @@ public class DefaultJsonHandler extends AbstractResponseHandler<JSONObject> {
 
     @Override
     protected JSONObject readObject(byte[] transTemp) throws IOException {
-        String tempStr = "";
+        String response = "";
         try {
-            tempStr = new String(transTemp, super.getCharset());
-            return JSON.parseObject(tempStr);
+            response = new String(transTemp, super.getCharset());
+            return JSON.parseObject(response);
         } catch (JSONException jsonException) {
-            logger.error("response pause failed.{}", tempStr);
+            logger.error("response parse failed. response: {}", response);
             throw jsonException;
         }
     }

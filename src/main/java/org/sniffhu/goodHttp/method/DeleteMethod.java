@@ -6,18 +6,20 @@ import org.sniffhu.goodHttp.RequestTemplate;
 /**
  * Created by Sniff on 2018/5/9.
  */
-public class DeleteMethod implements GenerateHttpMethod {
+public class DeleteMethod <In, Out> extends AbstractGenerateHttpMethod <In, Out> {
 
+
+    public DeleteMethod(RequestTemplate requestTemplate) {
+        super(requestTemplate);
+    }
 
     @Override
-    public <In, Out> HttpDelete generateHttpMethod(RequestTemplate<In, Out> inOutRequestTemplate) {
-        HttpDelete httpDelete = new HttpDelete(inOutRequestTemplate.getUrl());
-        String userAgent = inOutRequestTemplate.getUserAgent();
-        httpDelete.addHeader("User-agent", userAgent);
-        if (inOutRequestTemplate.getKeepAlive()) {
+    public HttpDelete generateHttpMethod() {
+        HttpDelete httpDelete = new HttpDelete(getInOutRequestTemplate().getUrl());
+        if (getInOutRequestTemplate().getKeepAlive()) {
             httpDelete.addHeader("Connection", "Keep-Alive");
         }
-        httpDelete.setConfig(inOutRequestTemplate.getRequestConfig());
+        httpDelete.setConfig(getInOutRequestTemplate().getRequestConfig());
         return httpDelete;
     }
 }

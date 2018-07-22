@@ -6,17 +6,21 @@ import org.sniffhu.goodHttp.RequestTemplate;
 /**
  * Created by Sniff on 2018/5/9.
  */
-public class GetMethod implements GenerateHttpMethod {
+public class GetMethod extends AbstractGenerateHttpMethod {
+
+    public GetMethod(RequestTemplate requestTemplate) {
+        super(requestTemplate);
+    }
 
     @Override
-    public <In, Out> HttpGet generateHttpMethod(RequestTemplate<In, Out> inOutRequestTemplate) {
-        HttpGet httpGet = new HttpGet(inOutRequestTemplate.getUrl());
-        String userAgent = inOutRequestTemplate.getUserAgent();
-        httpGet.addHeader("User-agent", userAgent);
-        if (inOutRequestTemplate.getKeepAlive()) {
+    public <In, Out> HttpGet generateHttpMethod() {
+        HttpGet httpGet = new HttpGet(getInOutRequestTemplate().getUrl());
+        if (getInOutRequestTemplate().getKeepAlive()) {
             httpGet.addHeader("Connection", "Keep-Alive");
         }
-        httpGet.setConfig(inOutRequestTemplate.getRequestConfig());
+        httpGet.setConfig(getInOutRequestTemplate().getRequestConfig());
         return httpGet;
     }
+
+
 }

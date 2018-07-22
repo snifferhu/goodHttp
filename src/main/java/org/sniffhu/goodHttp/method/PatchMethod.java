@@ -6,16 +6,20 @@ import org.sniffhu.goodHttp.RequestTemplate;
 /**
  * Created by Sniff on 2018/5/9.
  */
-public class PatchMethod implements GenerateHttpMethod {
+public class PatchMethod<In, Out> extends AbstractGenerateHttpMethod<In, Out> {
+    public PatchMethod(RequestTemplate<In, Out> inOutRequestTemplate) {
+        super(inOutRequestTemplate);
+    }
+
     @Override
-    public <In, Out> HttpPatch generateHttpMethod(RequestTemplate<In, Out> inOutRequestTemplate) {
-        HttpPatch httpPatch = new HttpPatch(inOutRequestTemplate.getUrl());
-        String userAgent = inOutRequestTemplate.getUserAgent();
-        httpPatch.addHeader("User-agent", userAgent);
-        if (inOutRequestTemplate.getKeepAlive()) {
+    public HttpPatch generateHttpMethod() {
+        HttpPatch httpPatch = new HttpPatch(getInOutRequestTemplate().getUrl());
+        if (getInOutRequestTemplate().getKeepAlive()) {
             httpPatch.addHeader("Connection", "Keep-Alive");
         }
-        httpPatch.setConfig(inOutRequestTemplate.getRequestConfig());
+        httpPatch.setConfig(getInOutRequestTemplate().getRequestConfig());
         return httpPatch;
     }
+
+
 }

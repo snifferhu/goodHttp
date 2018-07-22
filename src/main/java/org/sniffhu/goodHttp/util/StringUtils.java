@@ -5,6 +5,8 @@ package org.sniffhu.goodHttp.util;
  */
 public class StringUtils {
 
+    public static final String EMPTY = "";
+
     public static boolean isNotEmpty(CharSequence cs) {
         return !isEmpty(cs);
     }

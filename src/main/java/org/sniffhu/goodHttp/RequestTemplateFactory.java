@@ -17,18 +17,22 @@ public class RequestTemplateFactory {
 
     private RequestConfig requestConfig;
 
-    private AbstractResponseHandler handler = new DefaultJsonHandler();
+    private AbstractResponseHandler defaultHandler;
+    private AbstractResponseHandler jsonHandler = new DefaultJsonHandler();
     private AbstractResponseHandler xmlHandler = new DefaultXmlHandler();
     private AbstractResponseHandler strHandler = new DefaultStringHandler();
 
     public <In, Out> RequestTemplate<In, Out> genRequestTemplate() {
         requestConfig = RequestConfig.custom().build();
+        if (defaultHandler == null){
+            defaultHandler = jsonHandler;
+        }
         return new RequestTemplate<In, Out>()
                 .reqCharset(UTF_8.toString())
                 .respCharset(UTF_8.toString())
                 .requestConfig(requestConfig)
                 .connPoolManager(poolConnManager)
-                .responseHandler(handler)
+                .responseHandler(defaultHandler)
                 .retry(3);
     }
 
@@ -40,12 +44,28 @@ public class RequestTemplateFactory {
         this.requestConfig = requestConfig;
     }
 
-    public AbstractResponseHandler getHandler() {
-        return handler;
+    public AbstractResponseHandler getDefaultHandler() {
+        return defaultHandler;
     }
 
-    public void setHandler(AbstractResponseHandler handler) {
-        this.handler = handler;
+    public RequestTemplateFactory setDefaultHandler(AbstractResponseHandler defaultHandler) {
+        this.defaultHandler = defaultHandler;
+        return this;
+    }
+
+    public RequestTemplateFactory setStringResponse() {
+        this.defaultHandler = strHandler;
+        return this;
+    }
+
+    public RequestTemplateFactory setXmlResponse() {
+        this.defaultHandler = xmlHandler;
+        return this;
+    }
+
+    public RequestTemplateFactory setResponseHandler(AbstractResponseHandler defaultHandler) {
+        this.defaultHandler = defaultHandler;
+        return this;
     }
 
     public PoolingHttpClientConnectionManager getPoolConnManager() {
