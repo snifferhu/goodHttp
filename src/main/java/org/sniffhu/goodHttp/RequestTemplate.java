@@ -231,7 +231,7 @@ public class RequestTemplate<In, Out> {
             return defaultRequest(httpRequestBase);
         } catch (ConnectException connectException) {
             logger.warn("Connect failed. retryTimes:{} url:{} param:{}", retryTimes, url, params, connectException);
-            if (++retryTimes < this.getRetry()) {
+            if (retryTimes++ < this.getRetry()) {
                 return exec(httpRequestBase, retryTimes);
             }
             throw connectException;
@@ -266,7 +266,7 @@ public class RequestTemplate<In, Out> {
     public Out doGetRetry() throws IOException {
         genURL();
         HttpGet httpGet = MethodFactory.generateGetMethod(this);
-        return exec(httpGet, getRetry());
+        return exec(httpGet, 0);
     }
 
     public Out doPost() throws IOException {
@@ -282,6 +282,6 @@ public class RequestTemplate<In, Out> {
     public Out doPostRetry() throws IOException {
         genURL();
         HttpPost httpPost = MethodFactory.generatePostMethod(this);
-        return exec(httpPost, getRetry());
+        return exec(httpPost, 0);
     }
 }

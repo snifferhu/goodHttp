@@ -28,13 +28,13 @@ public abstract class AbstractResponseHandler<T> implements ResponseHandler<T> {
         this.charset = charset;
     }
 
-    public interface FailureCallback {
-        public void onException(Throwable msg);
+    public interface FailureCallback<T> {
+        public void onException(Throwable msg, T response);
 
-        public void onFailure(int statusCode, HttpResponse response);
+        public void onFailure(int statusCode, T response);
     }
 
-    private FailureCallback mCallback;
+    private FailureCallback<T> mCallback = new FailureCallbackHandler<T>();
 
     public void setFailureCallbak(FailureCallback c) {
         mCallback = c;
@@ -45,31 +45,32 @@ public abstract class AbstractResponseHandler<T> implements ResponseHandler<T> {
     public abstract AbstractResponseHandler charset(String charset);
 
     public T handleResponse(HttpResponse response) {
+        T result = null;
         if (response != null) {
             final int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode == HttpStatus.SC_OK) {
-                try(InputStream is = response.getEntity().getContent()) {
-                    if (is != null) {
-                        int bytesRead = -1;
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        while ((bytesRead = is.read(mBuffer)) != -1) {
-                            baos.write(mBuffer, 0, bytesRead);
-                        }
-                        byte[] transTemp = baos.toByteArray();
-                        return readObject(transTemp);
+            try (InputStream is = response.getEntity().getContent()) {
+                if (is != null) {
+                    int bytesRead = -1;
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    while ((bytesRead = is.read(mBuffer)) != -1) {
+                        baos.write(mBuffer, 0, bytesRead);
                     }
-                } catch (Exception e) {
-                    if (mCallback != null)
-                        mCallback.onException(e);
-                    e.printStackTrace();
+                    byte[] transTemp = baos.toByteArray();
+                    result = readObject(transTemp);
                 }
+            } catch (Exception e) {
+                if (mCallback != null)
+                    mCallback.onException(e, result);
+            }
+            if (statusCode == HttpStatus.SC_OK) {
+                return result;
             } else {
                 if (mCallback != null)
-                    mCallback.onFailure(statusCode, response);
+                    mCallback.onFailure(statusCode, result);
             }
         } else {
             if (mCallback != null) {
-                mCallback.onException(new IllegalArgumentException("responseHandler is null"));
+                mCallback.onException(new IllegalArgumentException("responseHandler is null"), result);
             }
         }
         return null;

@@ -19,10 +19,10 @@ public class RequestTemplateFactoryTest {
 
     @Test
     public void genRequestTemplate() throws Exception {
-        System.out.println(requestTemplateFactory.setStringResponse().genRequestTemplate().url("http://127.0.0.1:2000/add").setParams(new HashMap<String,String>(){{
-            put("a","4");
+        System.out.println(requestTemplateFactory.setXmlResponse().genRequestTemplate().url("http://127.0.0.1:2000/add").setParams(new HashMap<String,String>(){{
+            put("c","4");
             put("b","1");
-        }}).doGetOne());
+        }}).doGetRetry());
     }
 
 }
